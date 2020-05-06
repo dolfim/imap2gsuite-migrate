@@ -1,0 +1,15 @@
+FROM node:14-buster as builder
+
+COPY client /src
+WORKDIR /src
+RUN npm install && npm run build
+
+FROM nginx:stable
+
+ENV API_URL=http://localhost:5000
+
+# Create directory to hold the sites and cache.
+RUN mkdir -p /etc/nginx/sites-enabled
+
+COPY --from=builder /src/dist/ /usr/share/nginx/html
+COPY config/nginx.conf /etc/nginx/nginx.conf

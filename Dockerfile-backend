@@ -1,0 +1,65 @@
+FROM python:3.7-slim
+
+
+RUN set -xe && \
+  apt-get update \
+  && apt-get install -y \
+  libauthen-ntlm-perl \
+  libcgi-pm-perl \
+  libcrypt-openssl-rsa-perl \
+  libdata-uniqid-perl \
+  libencode-imaputf7-perl \
+  libfile-copy-recursive-perl \
+  libfile-tail-perl        \
+  libio-socket-ssl-perl \
+  libio-socket-inet6-perl \
+  libio-tee-perl \
+  libhtml-parser-perl \
+  libjson-webtoken-perl \
+  libmail-imapclient-perl \
+  libparse-recdescent-perl \
+  libmodule-scandeps-perl \
+  libpar-packer-perl \
+  libreadonly-perl \
+  libregexp-common-perl \
+  libsys-meminfo-perl \
+  libterm-readkey-perl \
+  libtest-mockobject-perl \
+  libtest-pod-perl \
+  libunicode-string-perl \
+  liburi-perl  \
+  libwww-perl \
+  procps \
+  wget \
+  make \
+  cpanminus \
+  lsof \
+  && rm -rf /var/lib/apt/lists/*
+
+
+RUN set -xe \
+  && pwd \
+  && wget -N https://raw.githubusercontent.com/imapsync/imapsync/imapsync-1.945/imapsync \
+  && mv imapsync /usr/bin/imapsync \
+  && chmod +x /usr/bin/imapsync
+
+
+## Backend app
+
+WORKDIR /app
+
+COPY requirements.txt /tmp/requirements.txt
+
+RUN pip install --upgrade pip \
+    && pip install --upgrade -r /tmp/requirements.txt
+
+COPY . /app
+WORKDIR /app
+
+# ENV FLASK_APP=server
+ENV FLASK_APP=server/app.py
+ENV FLASK_DEBUG=false
+ENV FLASK_ENV=production
+ENV PORT=5000
+
+CMD ["/app/run-backend.sh"]

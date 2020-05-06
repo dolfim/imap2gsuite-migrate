@@ -1,7 +1,4 @@
 
-secret.xoauth2.json
-config.env.local
-
 # Created by https://www.gitignore.io/api/vim,node,vuejs,macos,emacs,python,virtualenv,visualstudiocode
 # Edit at https://www.gitignore.io/?templates=vim,node,vuejs,macos,emacs,python,virtualenv,visualstudiocode
 
@@ -38,7 +35,7 @@ tramp
 
 # cask packages
 .cask/
-dist/
+**/dist/
 
 # Flycheck
 flycheck_*.el
@@ -126,6 +123,8 @@ build/Release
 node_modules/
 jspm_packages/
 
+**/node_modules/
+
 # TypeScript v1 declaration files
 typings/
 
@@ -148,7 +147,7 @@ typings/
 .yarn-integrity
 
 # dotenv environment variables file
-#.env
+.env
 .env.test
 
 # parcel-bundler cache (https://parceljs.org/)

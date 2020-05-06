@@ -1,0 +1,41 @@
+version: '3.7'
+
+services:
+  frontend:
+    image: ${FRONTEND_IMAGE_NAME}
+    ports:
+      - "8080:80"
+    links:
+      - backend
+
+  backend:
+    image: ${BACKEND_IMAGE_NAME}
+    environment:
+      REDIS_URL: redis://redis:6379/
+    links:
+      - redis
+
+  workers:
+    image: ${BACKEND_IMAGE_NAME}
+    command: /app/run-worker.sh
+    # command: /app/run-wait.sh
+    env_file:
+      - config.env
+    environment:
+      REDIS_URL: redis://redis:6379/
+      TARGET_AUTH_FILE: /run/secrets/secret.xoauth2.json
+    secrets:
+      - secret.xoauth2.json
+    links:
+      - redis
+    deploy:
+      replicas: 2
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+
+secrets:
+  secret.xoauth2.json:
+    file: ./secret.xoauth2.json
