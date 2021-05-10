@@ -81,6 +81,7 @@ def task_post():
         meta={
             'sub': user['sub'],
         },
+        job_timeout='4h',
         result_ttl=86400
     )
     task = _serialize_job(job)
